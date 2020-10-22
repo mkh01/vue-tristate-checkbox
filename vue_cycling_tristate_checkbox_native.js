@@ -71,20 +71,21 @@ Vue.component('tristate-checkbox', {
       // Target for v-model when given (think this.$vnode.data.model.value)
     },
   },
-  template: '\
-    <div style="display: inline-block" ref="container"> \
-      <input type="checkbox" :id="id || false" :disabled="disabled" \
-        @click.stop="toggle" \
-        @keyup.space.prevent="toggle" \
-        ref="checkbox" \
-        ></input> \
-      <input v-if="name && submission_value" \
-        type="hidden" :name="name" \
-        :value="submission_value" \
-        ref="hidden-input" \
-      ></input> \
-    </div> \
-    ',
+  template: `
+    <div style="display: inline-block" ref="container"> 
+      <input :id="id || false" ref="checkbox" :disabled="disabled" 
+        class="tristate-checkbox" 
+        type="checkbox" 
+        @click.stop="toggle" 
+        @keyup.space.prevent="toggle" 
+        /> 
+      <input v-if="name && submission_value" 
+        type="hidden" :name="name" 
+        :value="submission_value" 
+        ref="hidden-input" 
+      /> 
+    </div> 
+    `,
   data: function() {
     if (this.$vnode.data.model) {
       return {}
@@ -139,18 +140,18 @@ Vue.component('tristate-checkbox', {
       checkbox.checked = (state === this.trueValue)
       checkbox.indeterminate = (state === this.nullValue)
     },
-    toggle: function() {
+    toggle: function () {
       if (this.binary) {
-        this.state = ! this.state;
+        this.state = !this.state
       } else {
         switch (this.state) {
           case this.falseValue:
-            this.state = this.trueValue
-            break
-          case this.trueValue:
             this.state = this.nullValue
             break
           case this.nullValue:
+            this.state = this.trueValue
+            break
+          case this.trueValue:
             this.state = this.falseValue
             break
         }
