@@ -7,6 +7,8 @@
   5ed566ba1746f5a4d47330308b435ce006e21782ef58d7c741edf25b59b21ab7
 */
 
+import Vue from 'vue'
+
 Vue.component('tristate-checkbox', {
   model: {
     prop: '_external_state'  // re-directs v-model off prop `value`
