@@ -1,18 +1,11 @@
-/*
+<script>
+export default {
+  /*
   Vue.js component implementing a cycling tristate checkbox that supports form submission
-
   Copyright (C) 2020 Sebastian Pipping <sebastian@pipping.org>
   Licensed under the MIT license
-
   5ed566ba1746f5a4d47330308b435ce006e21782ef58d7c741edf25b59b21ab7
 */
-
-import Vue from 'vue'
-
-Vue.component('tristate-checkbox', {
-  model: {
-    prop: '_external_state'  // re-directs v-model off prop `value`
-  },
   props: {
     binary: {
       // Whether to revert back to a binary checkbox, wins over indeterminate
@@ -29,6 +22,7 @@ Vue.component('tristate-checkbox', {
       type: Boolean,
       default: false
     },
+    // eslint-disable-next-line vue/require-default-prop
     id: {
       // HTML ID to use for the checkbox node of the component
       type: String
@@ -40,17 +34,21 @@ Vue.component('tristate-checkbox', {
     },
     name: {
       // Name to use during form submission; set to enable form submission
-      type: String
+      type: String,
+      default: ''
     },
 
     trueValue: {
       // Model value to use for checked state
+      type: Boolean,
       default: true
     },
     falseValue: {
       // Model value to use for unchecked state
+      type: Boolean,
       default: false
     },
+    // eslint-disable-next-line vue/require-prop-types
     nullValue: {
       // Model value to use for indeterminate state
       default: null
@@ -66,60 +64,33 @@ Vue.component('tristate-checkbox', {
       type: String,
       default: 'indeterminate'
     },
-
+    // eslint-disable-next-line vue/prop-name-casing,vue/require-default-prop,vue/require-prop-types
     _external_state: {
       // Target for v-model when given (think this.$vnode.data.model.value)
-    },
+    }
   },
-  template: `
-    <div style="display: inline-block" ref="container"> 
-      <input :id="id || false" ref="checkbox" :disabled="disabled" 
-        class="tristate-checkbox" 
-        type="checkbox" 
-        @click.stop="toggle" 
-        @keyup.space.prevent="toggle" 
-        /> 
-      <input v-if="name && submission_value" 
-        type="hidden" :name="name" 
-        :value="submission_value" 
-        ref="hidden-input" 
-      /> 
-    </div> 
-    `,
-  data: function() {
-    if (this.$vnode.data.model) {
-      return {}
-    } else {
-      return {
-        internal_state: this.indeterminate
-                          ? this.nullValue
-                          : (this.checked
-                              ? this.trueValue
-                              : this.falseValue)
-      }
+  data () {
+    return {
+      internal_state: this.indeterminate ? this.nullValue : (this.checked ? this.trueValue : this.falseValue)
     }
   },
   computed: {
     state: {
-      get: function() {
+      get: function () {
         if (this.$vnode.data.model) {
           return this._external_state
         } else {
           return this.internal_state
         }
       },
-      set: function(newState) {
-        if (this.$vnode.data.model) {
-          this.$vnode.data.model.callback(newState)
-        } else {
-          this.internal_state = newState
-        }
+      set: function (newState) {
+        this.internal_state = newState
         this.apply_to_checkbox(newState)
       }
     },
 
     // Value used for hidden field during form sumbission
-    submission_value: function() {
+    submission_value: function () {
       switch (this.state) {
         case this.trueValue:
           return this.value
@@ -127,35 +98,52 @@ Vue.component('tristate-checkbox', {
           return this.valueIndeterminate
         case this.falseValue:
         default:
-          return false  // i.e. no submission as a plain checkbox would do
+          return false // i.e. no submission as a plain checkbox would do
       }
-    },
+    }
   },
-  mounted: function() {
+  created () {
+    if (this.icon !== '') {
+      this.extraClasses += 'fullSize iconized'
+    }
+  },
+  mounted: function () {
     this.apply_to_checkbox(this.state)
   },
   methods: {
-    apply_to_checkbox: function(state) {
-      var checkbox = this.$el.firstElementChild
+    apply_to_checkbox: function (state) {
+      const checkbox = this.$el.firstElementChild
       checkbox.checked = (state === this.trueValue)
       checkbox.indeterminate = (state === this.nullValue)
     },
     toggle: function () {
-      if (this.binary) {
-        this.state = !this.state
-      } else {
-        switch (this.state) {
-          case this.falseValue:
-            this.state = this.nullValue
-            break
-          case this.nullValue:
-            this.state = this.trueValue
-            break
-          case this.trueValue:
-            this.state = this.falseValue
-            break
-        }
+      switch (this.state) {
+        case this.falseValue:
+          this.state = this.nullValue
+          break
+        case this.trueValue:
+          this.state = this.falseValue
+          break
+        case this.nullValue:
+          this.state = this.trueValue
+          break
       }
     }
-  }
-})
+  },
+  // eslint-disable-next-line no-multi-str
+  template: '\
+    <div style="display: inline-block" ref="container"> \
+      <input type="checkbox" :id="id || false" :disabled="disabled" \
+        @click.stop="toggle" \
+        @keyup.space.prevent="toggle" \
+        ref="checkbox" \
+        > \
+      <input v-if="name && submission_value" \
+        type="hidden" :name="name" \
+        :value="submission_value" \
+        ref="hidden-input" \
+      > \
+    </div> \
+    '
+}
+</script>

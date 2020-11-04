@@ -53,7 +53,7 @@ If you like this component please support it with a star ★.  Thank you!
 ```html
 <head>
   <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
-  <script src="vue_cycling_tristate_checkbox_native.js"></script>
+  <script src="TristateCheckbox.vue"></script>
 </head>
 
 <body>
@@ -81,7 +81,7 @@ For a more elaborate version of this very example, please see
 ```html
 <head>
   <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
-  <script src="vue_cycling_tristate_checkbox_native.js"></script>
+  <script src="TristateCheckbox.vue"></script>
 </head>
 
 <body>
